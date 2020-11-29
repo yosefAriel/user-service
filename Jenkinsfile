@@ -1,7 +1,7 @@
 //user services
 pipeline {
-  agent any
-//        kubernetes {
+  agent {    
+       kubernetes {
 //        defaultContainer 'dind-slave'  
 //        yaml """
 //       apiVersion: v1 
@@ -25,7 +25,8 @@ pipeline {
 //             - name: docker-graph-storage 
 //               emptyDir: {}
 //  """
-//     }
+    }
+  }
     stages {
       //  this stage create enviroment variable from git for discored massage
       stage('get_commit_msg') {
