@@ -1,6 +1,6 @@
 //user services
 pipeline {
-  agent {    
+  agent any
 //        kubernetes {
 //        defaultContainer 'dind-slave'  
 //        yaml """
@@ -26,7 +26,6 @@ pipeline {
 //               emptyDir: {}
 //  """
 //     }
-  }
     stages {
       //  this stage create enviroment variable from git for discored massage
       stage('get_commit_msg') {
