@@ -2,7 +2,7 @@
 pipeline {
   agent {    
        kubernetes {
-       defaultContainer 'dind-slave'  
+       //defaultContainer 'dind-slave'  
        yaml """
       apiVersion: v1 
       kind: Pod 
