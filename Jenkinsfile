@@ -11,9 +11,7 @@ pipeline {
       spec: 
           containers: 
             - name: dind-slave
-              image:  jorgeacetozi/jenkins-slave-kubectl
-              command: ["/bin/sh"]
-              args: ["-c", "while true; do echo hello; sleep 10;done; &"]    
+              image:  jorgeacetozi/jenkins-slave-kubectl    
               resources: 
                   requests: 
                       cpu: 20m 
@@ -82,9 +80,7 @@ pipeline {
          container('kube-slave'){
            configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
           sleep(10)
-            sh """#!/bin/bash
-                   kubectl apply -f ${env.CONFIG_FILE}
-              """ 
+            sh "kubectl apply -f ${env.CONFIG_FILE}"
             // configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
             // "kubectl apply -f ${env.CONFIG_FILE}"
             //     sh 'pwd'
