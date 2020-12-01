@@ -67,11 +67,11 @@ pipeline {
   // }
 
       stage('create nameSpace and configMap in the cluster') {
-        // when {
-        //   anyOf {
-        //     branch 'master'; branch 'develop'
-        //   }
-        // }
+        when {
+          anyOf {
+            branch 'master'; branch 'develop'
+          }
+        }
         steps {
           container('kube-helm-slave'){
             sh("kubectl get ns master || kubectl create ns master")
@@ -83,11 +83,11 @@ pipeline {
               sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.MASTER_CONFIG_FILE}") 
               }    
             }
-            // else{
-            //   configFileProvider([configFile(fileId:'abda1ce7-3925-4759-88a7-5163bdb44382',variable:'DEVELOP_CONFIG_FILE')]){
-            //     sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}") 
-            //   }
-            // }
+            else{
+              configFileProvider([configFile(fileId:'abda1ce7-3925-4759-88a7-5163bdb44382',variable:'DEVELOP_CONFIG_FILE')]){
+                sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}") 
+              }
+            }
           }
         }
       }
