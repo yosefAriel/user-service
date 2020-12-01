@@ -74,36 +74,24 @@ pipeline {
         // }
         steps {
           container('kube-helm-slave'){
-
             sh("kubectl get ns master || kubectl create ns master")
+            // sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
             sleep(10)
-            configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
-              sh ("kubectl get cm kd.config --namespace master || kubectl apply -f ${env.CONFIG_FILE}") 
-            }  
-            // script {
-
-                // def ver_script = $/kubectl get ns /$
-                // echo "${ver_script}" 
-                // env.NAME_SPACE = sh(script: "${ver_script}", returnStdout: true)
-              //  env.NAME_SPACE = sh([script: " kubectl get ns | grep ${env.BRANCH_NAME} ", returnStdout: true]).trim()
-
-              //  sh "echo resaults ${env.NAME_SPACE}"
-              //  env.NAME_SPACE = sh(script: "grep test <<< ${env.NAME_SPACE}", returnStdout: true).trim() 
-              //  sh "echo resaults ${env.NAME_SPACE}"
-              // if ("${env.NAME_SPACE} != ${env.BRANCH_NAME}" ) {
-              //     sh "echo this is nameSpace ${env.NAME_SPACE}  and this is branch name ${env.BRANCH_NAME} "
-              //     sh "kubectl create namespace ${env.BRANCH_NAME}"
-              // }
-              // env.CONFIG_MAP = sh([script: "kubectl get cm --namespace ${env.BRANCH_NAME} | grep kd.config", returnStdout: true]).trim()
-              // if ("${env.CONFIG_MAP} != kd.config") {
-              //   configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
-              //   sh "kubectl apply -f ${env.CONFIG_FILE}" 
-              //   }  
-              // }
+          script {
+            if("${env.BRANCH_NAME}.equals('devops/ci')") {
+              configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'MASTER_CONFIG_FILE')]){
+              sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.MASTER_CONFIG_FILE}") 
+              }    
+            }
+            // else{
+            //   configFileProvider([configFile(fileId:'abda1ce7-3925-4759-88a7-5163bdb44382',variable:'DEVELOP_CONFIG_FILE')]){
+            //     sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}") 
+            //   }
             // }
           }
         }
       }
+    }
 
       // build image for unit test 
       // stage('build dockerfile of tests chara') {
