@@ -75,10 +75,10 @@ pipeline {
         steps {
           container('kube-helm-slave'){
 
-            sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
+            sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns master")
             sleep(10)
             configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
-              sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.CONFIG_FILE} --namespace ${env.BRANCH_NAME}") 
+              sh ("kubectl get cm kd.config --namespace master || kubectl apply -f ${env.CONFIG_FILE} --namespace master") 
             }  
             // script {
 
