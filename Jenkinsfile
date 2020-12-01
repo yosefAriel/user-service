@@ -76,7 +76,7 @@ pipeline {
           container('kube-helm-slave'){
               sh "echo ${env.BRANCH_NAME}"
             script {
-                def ver_script = $/"kubectl get ns | grep test"/$
+                def ver_script = $/kubectl get ns | grep ${env.BRANCH_NAME}/$
                 echo "${ver_script}" 
                 env.NAME_SPACE = sh(script: "${ver_script}", returnStdout: true).trim() 
               //  env.NAME_SPACE = sh([script: " kubectl get ns | grep ${env.BRANCH_NAME} ", returnStdout: true]).trim()
