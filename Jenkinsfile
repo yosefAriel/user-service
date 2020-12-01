@@ -2,7 +2,7 @@
 pipeline {
   agent {    
        kubernetes {
-       //defaultContainer 'dind-slave'  
+       defaultContainer 'dind-slave'  
        yaml """
       apiVersion: v1 
       kind: Pod 
@@ -25,6 +25,29 @@ pipeline {
             - name: docker-graph-storage 
               emptyDir: {}
  """
+        yaml """
+            apiVersion: v1 
+            kind: Pod 
+            metadata: 
+                name: k8s-kube
+            spec: 
+                containers: 
+                  - name: kube-slave
+                    image: yonadev/jnlp-slave-k8s-helm
+                    resources: 
+                        requests: 
+                            cpu: 20m 
+                            memory: 512Mi 
+                    securityContext: 
+                        privileged: true 
+                    volumeMounts: 
+                      - name: docker-graph-storage 
+                        mountPath: /var/lib/docker 
+                volumes: 
+                  - name: docker-graph-storage 
+                    emptyDir: {}
+        """
+ 
     }
   }
     stages {
@@ -53,15 +76,16 @@ pipeline {
     }
       // build image for unit test 
       stage('build dockerfile of tests') {
-       agent any
         steps {
+         container('kube-slave'){
             configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
-              sh "sudo kubectl apply -f ${CONFIG_FILE}"
+              sh "kubectl apply -f ${CONFIG_FILE}"
                 sh 'pwd'
             }
             // sh "docker build -t unittest -f test.Dockerfile ." 
         }  
       }
+     }
       // run image of unit test
     //   stage('run unit tests') {   
     //     steps {
