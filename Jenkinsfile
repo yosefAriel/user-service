@@ -12,8 +12,8 @@ pipeline {
           containers: 
             - name: dind-slave
               image:  yonadev/jnlp-slave-k8s-helm
-              command: ["sleep"]
-              args: ["sleep", "5m"]    
+              command: ["/bin/sh"]
+              args: ["-c", "while true; do echo hello; sleep 10;done"]    
               resources: 
                   requests: 
                       cpu: 20m 
