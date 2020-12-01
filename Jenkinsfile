@@ -11,7 +11,9 @@ pipeline {
       spec: 
           containers: 
             - name: dind-slave
-              image: yonadev/jnlp-slave-k8s-helm 
+              image:  yonadev/jnlp-slave-k8s-helm
+              command:
+              - sleep 5m   
               resources: 
                   requests: 
                       cpu: 20m 
