@@ -64,6 +64,7 @@ pipeline {
         }  
      }
     }
+  }
       // build image for unit test 
       stage('build dockerfile of tests') {
         steps {
@@ -119,5 +120,6 @@ pipeline {
     //       }
     //     } 
     //   }      
-     }   
+     }
+        
 }
