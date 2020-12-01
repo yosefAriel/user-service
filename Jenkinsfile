@@ -2,28 +2,51 @@
 pipeline {
   agent {    
        kubernetes {
-         yaml """
-        apiVersion: v1 
-        kind: Pod 
-        metadata: 
-            name: k8s-kube
-        spec: 
-            containers: 
-                - name: kube-slave
-                image: yonadev/jnlp-slave-k8s-helm
-                resources: 
-                    requests: 
-                        cpu: 20m 
-                        memory: 512Mi 
-                securityContext: 
-                    privileged: true 
-                volumeMounts: 
-                  - name: docker-graph-storage 
-                    mountPath: /var/lib/docker 
-            volumes: 
-              - name: docker-graph-storage 
-                emptyDir: {}
-        """
+       defaultContainer 'dind-slave'  
+       yaml """
+      apiVersion: v1 
+      kind: Pod 
+      metadata: 
+          name: k8s-worker
+      spec: 
+          containers: 
+            - name: dind-slave
+              image: docker:dind 
+              resources: 
+                  requests: 
+                      cpu: 20m 
+                      memory: 512Mi 
+              securityContext: 
+                  privileged: true 
+              volumeMounts: 
+                - name: docker-graph-storage 
+                  mountPath: /var/lib/docker 
+          volumes: 
+            - name: docker-graph-storage 
+              emptyDir: {}
+ """
+        //  yaml """
+        // apiVersion: v1 
+        // kind: Pod 
+        // metadata: 
+        //     name: k8s-kube
+        // spec: 
+        //     containers: 
+        //         - name: kube-slave
+        //         image: yonadev/jnlp-slave-k8s-helm
+        //         resources: 
+        //             requests: 
+        //                 cpu: 20m 
+        //                 memory: 512Mi 
+        //         securityContext: 
+        //             privileged: true 
+        //         volumeMounts: 
+        //           - name: docker-graph-storage 
+        //             mountPath: /var/lib/docker 
+        //     volumes: 
+        //       - name: docker-graph-storage 
+        //         emptyDir: {}
+        // """
     
     }
   }
