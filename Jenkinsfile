@@ -79,7 +79,7 @@ pipeline {
       // build image for unit test 
       stage('build dockerfile of tests') {
         steps {
-         container('kube-slave')
+         container('kube-slave'){
             sh 'sleep 10m'
             // configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
             // "kubectl apply -f ${env.CONFIG_FILE}"
