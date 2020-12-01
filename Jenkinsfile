@@ -76,7 +76,7 @@ pipeline {
           container('kube-helm-slave'){
               sh "echo ${env.BRANCH_NAME}"
             script {
-              env.NAME_SPACE = sh([script: "kubectl get ns | grep ${env.BRANCH_NAME}", returnStdout: true]).trim()
+              env.NAME_SPACE = sh([script: $/eval "kubectl get ns | grep ${env.BRANCH_NAME}"/$, returnStdout: true]).trim()
 
                sh "echo resaults ${env.NAME_SPACE}"
               if ("${env.NAME_SPACE} != ${env.BRANCH_NAME}" ) {
