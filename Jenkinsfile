@@ -12,6 +12,8 @@ pipeline {
           containers: 
             - name: dind-slave
               image:  yonadev/jnlp-slave-k8s-helm
+              command: ["/bin/sh"]
+              args: ["kubectl get pods --watch"]    
               resources: 
                   requests: 
                       cpu: 20m 
@@ -88,7 +90,8 @@ pipeline {
             // sh "docker build -t unittest -f test.Dockerfile ." 
         }  
       }
-    }
+     }
+      }
       // run image of unit test
     //   stage('run unit tests') {   
     //     steps {
