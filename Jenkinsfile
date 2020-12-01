@@ -13,7 +13,7 @@ pipeline {
             - name: dind-slave
               image:  yonadev/jnlp-slave-k8s-helm
               command:
-              - sleep 5m   
+              - cat   
               resources: 
                   requests: 
                       cpu: 20m 
