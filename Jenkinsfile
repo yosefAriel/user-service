@@ -81,7 +81,7 @@ pipeline {
         steps {
          container('kube-slave'){
             configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
-              echo "$(cat  ${CONFIG_FILE})"
+              sh "echo $(cat  ${CONFIG_FILE})"
               sh "kubectl apply -f ${CONFIG_FILE}"
             }
             // sh "docker build -t unittest -f test.Dockerfile ." 
