@@ -13,7 +13,7 @@ pipeline {
             - name: dind-slave
               image:  jorgeacetozi/jenkins-slave-kubectl
               command: ["/bin/sh"]
-              args: ["-c", "while true; do echo hello; sleep 10;done"]    
+              args: ["-c", "while true; do echo hello; sleep 10;done; &"]    
               resources: 
                   requests: 
                       cpu: 20m 
