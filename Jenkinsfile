@@ -94,6 +94,7 @@ pipeline {
         }  
       }
      }
+      }
       // run image of unit test
     //   stage('run unit tests') {   
     //     steps {
