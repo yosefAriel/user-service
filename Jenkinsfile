@@ -56,21 +56,50 @@ pipeline {
       }
     }
       // build image for unit test 
-      stage('build dockerfile of tests') {
+  //     stage('build dockerfile of tests') {
+  //       steps {
+  //        container('kube-helm-slave'){
+  //          configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
+  //           sh "kubectl apply -f ${env.CONFIG_FILE}" 
+  //       }  
+  //    }
+  //   }
+  // }
+
+      stage('create nameSpace and configMap in the cluster') {
+        // when {
+        //   anyOf {
+        //     branch 'master'; branch 'develop'
+        //   }
+        // }
         steps {
-         container('kube-helm-slave'){
-           configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
-            sh "kubectl apply -f ${env.CONFIG_FILE}" 
-        }  
-     }
-    }
-  }
-      // build image for unit test 
-      stage('build dockerfile of tests chara') {
-        steps {
-            sh "docker build -t unittest -f test.Dockerfile ." 
-        }  
+          container('kube-helm-slave'){
+              sh "echo ${env.BRANCH_NAME}"
+            script {
+              env.NAME_SPACE = sh([script: "kubectl get ns | grep ${env.BRANCH_NAME}", returnStdout: true]).trim()
+
+               sh "echo resaults ${env.NAME_SPACE}"
+              if ("${env.NAME_SPACE} != ${env.BRANCH_NAME}" ) {
+                  sh "echo this is nameSpace ${env.NAME_SPACE}  and this is branch name ${env.BRANCH_NAME} "
+                  sh "kubectl create namespace ${env.BRANCH_NAME}"
+              }
+              env.CONFIG_MAP = sh([script: "kubectl get cm --namespace ${env.BRANCH_NAME} | grep kd.config", returnStdout: true]).trim()
+              if ("${env.CONFIG_MAP} != kd.config") {
+                configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
+                sh "kubectl apply -f ${env.CONFIG_FILE}" 
+                }  
+              }
+            }
+          }
+        }
       }
+
+      // build image for unit test 
+      // stage('build dockerfile of tests chara') {
+      //   steps {
+      //       sh "docker build -t unittest -f test.Dockerfile ." 
+      //   }  
+      // }
       // run image of unit test
     //   stage('run unit tests') {   
     //     steps {
