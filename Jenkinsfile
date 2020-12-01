@@ -85,7 +85,7 @@ pipeline {
             // "kubectl apply -f ${env.CONFIG_FILE}"
             //     sh 'pwd'
 
-            }
+            //}
             // sh "docker build -t unittest -f test.Dockerfile ." 
         }  
       }
