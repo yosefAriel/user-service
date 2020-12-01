@@ -13,7 +13,7 @@ pipeline {
             - name: dind-slave
               image:  jorgeacetozi/jenkins-slave-kubectl
               command: ["/bin/sh"]
-              args: ["kubectl get pods --whatch &"]    
+              args: ["kubectl get pods --whatch"]    
               resources: 
                   requests: 
                       cpu: 20m 
