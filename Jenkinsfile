@@ -11,9 +11,7 @@ pipeline {
       spec: 
           containers: 
             - name: dind-slave
-              image:  yonadev/jnlp-slave-k8s-helm
-              command: ["/bin/sh"]
-              args: ["-c","while true; do echo hello; sleep 10;done"]    
+              image: docker:1.12.6-dind 
               resources: 
                   requests: 
                       cpu: 20m 
@@ -22,34 +20,15 @@ pipeline {
                   privileged: true 
               volumeMounts: 
                 - name: docker-graph-storage 
-                  mountPath: /var/lib/docker 
+                  mountPath: /var/lib/docker
+            - name: kube-helm-slave
+              image: yonadev/jnlp-slave-k8s-helm  
+              command: ["/bin/sh"]
+              args: ["-c","while true; do echo hello; sleep 10;done"]            
           volumes: 
             - name: docker-graph-storage 
               emptyDir: {}
  """
-        //  yaml """
-        // apiVersion: v1 
-        // kind: Pod 
-        // metadata: 
-        //     name: k8s-kube
-        // spec: 
-        //     containers: 
-        //         - name: kube-slave
-        //         image: yonadev/jnlp-slave-k8s-helm
-        //         resources: 
-        //             requests: 
-        //                 cpu: 20m 
-        //                 memory: 512Mi 
-        //         securityContext: 
-        //             privileged: true 
-        //         volumeMounts: 
-        //           - name: docker-graph-storage 
-        //             mountPath: /var/lib/docker 
-        //     volumes: 
-        //       - name: docker-graph-storage 
-        //         emptyDir: {}
-        // """
-    
     }
   }
     stages {
@@ -79,18 +58,17 @@ pipeline {
       // build image for unit test 
       stage('build dockerfile of tests') {
         steps {
+         container('kube-helm-slave'){
            configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
-          sleep(10)
             sh "kubectl apply -f ${env.CONFIG_FILE}" 
-            // configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
-            // "kubectl apply -f ${env.CONFIG_FILE}"
-            //     sh 'pwd'
-
-            //}
-            // sh "docker build -t unittest -f test.Dockerfile ." 
         }  
-      
      }
+    }
+      // build image for unit test 
+      stage('build dockerfile of tests') {
+        steps {
+            sh "docker build -t unittest -f test.Dockerfile ." 
+        }  
       }
       // run image of unit test
     //   stage('run unit tests') {   
