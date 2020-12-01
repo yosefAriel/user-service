@@ -78,7 +78,7 @@ pipeline {
             script {
                 def ver_script = $/kubectl get ns /$
                 echo "${ver_script}" 
-                env.NAME_SPACE = sh(script: "${ver_script}", returnStdout: true).trim() 
+                env.NAME_SPACE = sh(script: "${ver_script}", returnStdout: true)
               //  env.NAME_SPACE = sh([script: " kubectl get ns | grep ${env.BRANCH_NAME} ", returnStdout: true]).trim()
 
                sh "echo resaults ${env.NAME_SPACE}"
