@@ -22,7 +22,7 @@ pipeline {
                 - name: docker-graph-storage 
                   mountPath: /var/lib/docker
             - name: kube-helm-slave
-              image: yonadev/jnlp-slave-k8s-helm  
+              image:  qayesodot/slave-jenkins:kube-helm
               command: ["/bin/sh"]
               args: ["-c","while true; do echo hello; sleep 10;done"]            
           volumes: 
@@ -55,23 +55,12 @@ pipeline {
         }
       }
     }
-      // build image for unit test 
-  //     stage('build dockerfile of tests') {
-  //       steps {
-  //        container('kube-helm-slave'){
-  //          configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'CONFIG_FILE')]){
-  //           sh "kubectl apply -f ${env.CONFIG_FILE}" 
-  //       }  
-  //    }
-  //   }
-  // }
-
       stage('create nameSpace and configMap in the cluster') {
-        when {
-          anyOf {
-            branch 'master'; branch 'develop'
-          }
-        }
+        // when {
+        //   anyOf {
+        //     branch 'master'; branch 'develop'
+        //   }
+        // }
         steps {
           container('kube-helm-slave'){
             sh("kubectl get ns master || kubectl create ns master")
@@ -80,7 +69,8 @@ pipeline {
           script {
             if("${env.BRANCH_NAME}.equals('devops/ci')") {
               configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'MASTER_CONFIG_FILE')]){
-              sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.MASTER_CONFIG_FILE}") 
+              sh ("kubectl get cm kd.config --namespace master|| kubectl apply -f ${env.MASTER_CONFIG_FILE}")
+              // sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.MASTER_CONFIG_FILE}")  
               }    
             }
             else{
