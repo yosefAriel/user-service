@@ -67,7 +67,7 @@ pipeline {
             // sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
             sleep(10)
           script {
-            if("${env.BRANCH_NAME}.equals('devops/cis')") {
+            if(env.BRANCH_NAME == 'devops/cis') {
               configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'MASTER_CONFIG_FILE')]){
               sh ("kubectl get cm kd.config --namespace master|| kubectl apply -f ${env.MASTER_CONFIG_FILE}")
               sh 'helm list'
