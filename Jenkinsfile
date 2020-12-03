@@ -41,7 +41,7 @@ pipeline {
             env.GIT_SHORT_COMMIT = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
             env.GIT_COMMITTER_EMAIL = sh (script: "git --no-pager show -s --format='%ae'", returnStdout: true  ).trim()
             env.GIT_REPO_NAME = scm.getUserRemoteConfigs()[0].getUrl().tokenize('/')[3].split("\\.")[0]
-            
+
             // Takes the branch name and replaces the slashes with the %2F mark 
             env.BRANCH_FOR_URL = sh([script: "echo ${GIT_BRANCH} | sed 's;/;%2F;g'", returnStdout: true]).trim()
             // Takes the job path variable and replaces the slashes with the %2F mark 
@@ -98,9 +98,9 @@ pipeline {
             url: 'https://github.com/meateam/kd-helm.git'
             sh 'cat common/templates/_deployment.yaml'
         script {
-            env.IMAGE_PULL_SECRETS ="           imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret"
+            env.IMAGE_PULL_SECRETS ="sed -i 's/imagePullPolicy: {{ .Values.image.pullPolicy }}/          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret/g' ./common/templates/_deployment.yaml"
         }
-        sh 'echo sed -i "s/imagePullPolicy: {{ .Values.image.pullPolicy }}/          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret/g" ./common/templates/_deployment.yaml > changeCommonDeployments.sh'
+        sh "echo ${env.IMAGE_PULL_SECRETS} > changeCommonDeployments.sh"
         sh "chmod 755 changeCommonDeployments.sh"
         sh "ls"
         sh "cat ./changeCommonDeployments.sh"
