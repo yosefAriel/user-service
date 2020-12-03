@@ -104,7 +104,7 @@ pipeline {
         }
            sh "sed -i '29 ${env.space2}imagePullSecrets:' ./common/templates/_deployment.yaml"
           //  sh "sed '30 ${env.space1} name: acr-secret' ./common/templates/_deployment.yaml"
-           sh "sed -i '30 i ${env.space1}\- name: acr-secret' ./common/templates/_deployment.yaml"
+           sh "sed -i '30 i ${env.space1}'-' name: acr-secret' ./common/templates/_deployment.yaml"
 
         // sh "echo ${env.IMAGE_PULL_SECRETS} > changeCommonDeployments.sh"
         // sh "chmod 755 changeCommonDeployments.sh"
