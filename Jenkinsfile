@@ -96,8 +96,9 @@ pipeline {
           git branch: 'master',
             credentialsId: 'gitHubToken',
             url: 'https://github.com/meateam/kd-helm.git'
-
-            sh 'ls'
+            sh 'cat common/templates/_deployment.yaml'
+            sh "sed -i 's;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g' common/templates/_deployment.yaml" 
+            sh 'cat common/templates/_deployment.yaml'
          }
       }
     }
