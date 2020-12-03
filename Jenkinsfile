@@ -98,7 +98,7 @@ pipeline {
             url: 'https://github.com/meateam/kd-helm.git'
             sh 'cat common/templates/_deployment.yaml'
             // sh 'sed -i `s;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g` common/templates/_deployment.yaml'
-            sh([script: "sed "s;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g" common/templates/_deployment.yaml"])
+            sh([script: "sed ':a;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g' common/templates/_deployment.yaml"])
             sh 'cat common/templates/_deployment.yaml'
          }
       }
