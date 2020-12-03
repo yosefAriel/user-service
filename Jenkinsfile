@@ -97,7 +97,7 @@ pipeline {
             credentialsId: 'gitHubToken',
             url: 'https://github.com/meateam/kd-helm.git'
 
-            sh 'pwd'
+            sh 'ls'
          }
       }
     }
