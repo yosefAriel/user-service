@@ -55,33 +55,50 @@ pipeline {
         }
       }
     }
-      stage('create nameSpace and configMap in the cluster') {
-        // when {
-        //   anyOf {
-        //     branch 'master'; branch 'develop'
-        //   }
-        // }
-        steps {
-          container('kube-helm-slave'){
-            sh("kubectl get ns develop || kubectl create ns develop")
-            // sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
-            sleep(10)
-          script {
-            if(env.BRANCH_NAME == 'devops/cis') {
-              configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'MASTER_CONFIG_FILE')]){
-              sh ("kubectl get cm kd.config --namespace master|| kubectl apply -f ${env.MASTER_CONFIG_FILE}")
-              sh 'helm list'
-              // sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.MASTER_CONFIG_FILE}")  
-              }    
-            }
-            else{
-              configFileProvider([configFile(fileId:'abda1ce7-3925-4759-88a7-5163bdb44382',variable:'DEVELOP_CONFIG_FILE')]){
-                sh ("kubectl get cm kd.config --namespace develop || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")
-                //sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")  
-              }
-            }
-          }
-        }
+    //   stage('create nameSpace and configMap in the cluster') {
+    //     // when {
+    //     //   anyOf {
+    //     //     branch 'master'; branch 'develop'
+    //     //   }
+    //     // }
+    //     steps {
+    //       container('kube-helm-slave'){
+    //         sh("kubectl get ns develop || kubectl create ns develop")
+    //         // sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
+    //         sleep(10)
+    //       script {
+    //         if(env.BRANCH_NAME == 'devops/cis') {
+    //           configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'MASTER_CONFIG_FILE')]){
+    //           sh ("kubectl get cm kd.config --namespace master|| kubectl apply -f ${env.MASTER_CONFIG_FILE}")
+    //           sh 'helm list'
+    //           // sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.MASTER_CONFIG_FILE}")  
+    //           }    
+    //         }
+    //         else{
+    //           configFileProvider([configFile(fileId:'abda1ce7-3925-4759-88a7-5163bdb44382',variable:'DEVELOP_CONFIG_FILE')]){
+    //             sh ("kubectl get cm kd.config --namespace develop || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")
+    //             //sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")  
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+
+    stage('clone kd-helm reposetory and update the tag '){
+      // when {
+      //   anyOf {
+      //     branch 'master'; branch 'develop'
+      //   }
+      // }
+      steps {
+         container('jnlp'){
+          git branch: 'master',
+            credentialsId: 'gitHubToken',
+            url: 'git@github.com:meateam/kd-helm.git'
+
+            sh 'pwd'
+         }
       }
     }
 
