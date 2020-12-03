@@ -100,10 +100,14 @@ pipeline {
         script {
             env.IMAGE_PULL_SECRETS ="           imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret"
         }
+        sh "echo sed -i 's;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g' ./common/templates/_deployment.yaml > changeCommonDeployments.sh"
+        sh "chmod 755 changeCommonDeployments.sh"
+        sh "ls"
+        sh "./changeCommonDeployments.sh"
             // sh 'sed -i `s;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g` common/templates/_deployment.yaml'
             // sh([script: "sed -i 's;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g' common/templates/_deployment.yaml"])
             // sh "sed -i 's;imagePullPolicy: {{ .Values.image.pullPolicy }};${env.IMAGE_PULL_SECRETS};g' common/templates/_deployment.yaml"
-            sh([script: "sed -i -e 's;imagePullPolicy:;${env.IMAGE_PULL_SECRETS};g'"]) 
+            //sh([script: "sed -i -e 's;imagePullPolicy:;${env.IMAGE_PULL_SECRETS};g'"]) 
             sh 'cat common/templates/_deployment.yaml'
          }
       }
