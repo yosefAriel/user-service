@@ -95,7 +95,7 @@ pipeline {
          container('jnlp'){
           git branch: 'master',
             credentialsId: 'gitHubToken',
-            url: 'git@github.com:meateam/kd-helm.git'
+            url: 'https://github.com/meateam/kd-helm.git'
 
             sh 'pwd'
          }
