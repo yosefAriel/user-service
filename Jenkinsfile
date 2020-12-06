@@ -98,13 +98,13 @@ pipeline {
             url: 'https://github.com/meateam/kd-helm.git'
             sh 'cat common/templates/_deployment.yaml'
         script {
-            env.space1 = "        "
-            env.space2 = "      "
+            env.space1 = "- name: acr-secret"
+            env.space2 = "imagePullSecrets:"
             env.IMAGE_PULL_SECRETS ='sed -i "imagePullPolicy: {{ .Values.image.pullPolicy }}/          imagePullPolicy: {{ .Values.image.pullPolicy }}"\n"      imagePullSecrets:"\n"        - name: acr-secret/g" ./common/templates/_deployment.yaml'
         }
-           sh 'sed -i "29 i       imagePullSecrets:" ./common/templates/_deployment.yaml'
+           sh "sed -i '29 i  \ \ \ \ \ \ ${env.space2}' ./common/templates/_deployment.yaml"
           //  sh "sed '30 ${env.space1} name: acr-secret' ./common/templates/_deployment.yaml"
-           sh 'sed -i "30 i         - name: acr-secret" ./common/templates/_deployment.yaml'
+           sh "sed -i '30 i \ \ \ \ \ \ \ \ ${env.space1}' ./common/templates/_deployment.yaml"
 
         // sh "echo ${env.IMAGE_PULL_SECRETS} > changeCommonDeployments.sh"
         // sh "chmod 755 changeCommonDeployments.sh"
