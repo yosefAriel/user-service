@@ -64,7 +64,7 @@ pipeline {
         steps {
           container('kube-helm-slave'){
             // sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
-            sh ("kubectl get secrets acr-secret || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io")
+            sh ("kubectl get secrets acr-secret || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password=Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io")
 
           //   sh("kubectl get ns develop || kubectl create ns develop")
           //   // sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
