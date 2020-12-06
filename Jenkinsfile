@@ -67,7 +67,7 @@ pipeline {
     //         // sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
     //         sleep(10)
     //       script {
-    //         if(env.BRANCH_NAME == 'devops/cis') {
+    //         if(env.BRANCH_NAME == 'devops/ci') {
     //           configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'MASTER_CONFIG_FILE')]){
     //           sh ("kubectl get cm kd.config --namespace master|| kubectl apply -f ${env.MASTER_CONFIG_FILE}")
     //           sh 'helm list'
@@ -98,8 +98,8 @@ pipeline {
             url: 'https://github.com/meateam/kd-helm.git'
             sh 'cat common/templates/_deployment.yaml'
         script {
-            env.space1 = '\ \ \ \ \ \ \ \ '
-            env.space2 = '\ \ \ \ \ \ \ '
+            env.space1 = "\ \ \ \ \ \ \ \ "
+            env.space2 = "\ \ \ \ \ \ \ "
             env.IMAGE_PULL_SECRETS ='sed -i "imagePullPolicy: {{ .Values.image.pullPolicy }}/          imagePullPolicy: {{ .Values.image.pullPolicy }}"\n"      imagePullSecrets:"\n"        - name: acr-secret/g" ./common/templates/_deployment.yaml'
         }
            sh "sed -i '29 i ${env.space2}imagePullSecrets:' ./common/templates/_deployment.yaml"
@@ -111,12 +111,12 @@ pipeline {
         // sh "ls"
         // sh "cat ./changeCommonDeployments.sh"
         // sh "./changeCommonDeployments.sh"
-            // sh 'sed -i `s;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g` common/templates/_deployment.yaml'
-            // sh([script: "sed -i 's;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g' common/templates/_deployment.yaml"])
-            // sh "sed -i 's;imagePullPolicy: {{ .Values.image.pullPolicy }};${env.IMAGE_PULL_SECRETS};g' common/templates/_deployment.yaml"
-            //sh([script: "sed -i -e 's;imagePullPolicy:;${env.IMAGE_PULL_SECRETS};g'"]) 
-            sh 'cat common/templates/_deployment.yaml'
-            //sh "rm ./changeCommonDeployments.sh"
+        // sh 'sed -i `s;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g` common/templates/_deployment.yaml'
+        // sh([script: "sed -i 's;imagePullPolicy: {{ .Values.image.pullPolicy }};          imagePullPolicy: {{ .Values.image.pullPolicy }}\n      imagePullSecrets:\n        - name: acr-secret;g' common/templates/_deployment.yaml"])
+        // sh "sed -i 's;imagePullPolicy: {{ .Values.image.pullPolicy }};${env.IMAGE_PULL_SECRETS};g' common/templates/_deployment.yaml"
+        //sh([script: "sed -i -e 's;imagePullPolicy:;${env.IMAGE_PULL_SECRETS};g'"]) 
+        sh 'cat common/templates/_deployment.yaml'
+        //sh "rm ./changeCommonDeployments.sh"
          }
       }
     }
