@@ -101,13 +101,14 @@ pipeline {
         container('kube-helm-slave'){
           script {
            if(env.BRANCH_NAME == 'master'){ 
-           sh """ grep ingress-master <('kubectl get deployments') ||  
+           sh """ grep ingress-master <("kubectl get deployments") ||  
             helm install --name ingress-master ingress-nginx/ingress-nginx --namespace ${env.BRANCH_NAME}
             --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux 
             --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=20.54.101.163
             """
            } else {
-             sh """ grep ingress-develop <('kubectl get deployments') ||  
+             echo "ddd"
+             sh """ grep ingress-develop <("kubectl get deployments") ||  
               helm install --name ingress-develop ingress-nginx/ingress-nginx --namespace develop
               --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux 
               --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=51.104.179.70
