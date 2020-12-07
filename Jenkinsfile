@@ -108,10 +108,10 @@ pipeline {
           //   """
            } else {
              sh([script: """
-             kubectl get deployments --namespace develop | grep ingress-develop ||helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx &&
-             helm repo update &&
-             helm install --name ingress-develop ingress-nginx/ingress-nginx --namespace develop \n
-             --set controller.replicaCount=2 --set controller.nodeSelector.beta\\.kubernetes\\.io/os=linux \n
+             kubectl get deployments --namespace develop | grep ingress-develop ||helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
+             helm repo update && \
+             helm install --name ingress-develop ingress-nginx/ingress-nginx --namespace develop \
+             --set controller.replicaCount=2 --set controller.nodeSelector.beta\\.kubernetes\\.io/os=linux \
              --set defaultBackend.nodeSelector.beta\\.kubernetes\\.io/os=linux --set controller.service.loadBalancerIP=51.104.179.70
               """])
               
