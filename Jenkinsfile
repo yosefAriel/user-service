@@ -101,11 +101,13 @@ pipeline {
         container('kube-helm-slave'){
           script {
            if(env.BRANCH_NAME == 'master'){ 
-          //  sh """ grep ingress-master <("kubectl get deployments --namespace ${env.BRANCH_NAME}") ||  
-          //   helm install --name ingress-master ingress-nginx/ingress-nginx --namespace ${env.BRANCH_NAME}
-          //   --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux 
-          //   --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=20.54.101.163
-          //   """
+             sh([script: """
+             kubectl get deployment --namespace master | grep  ingress-master || (helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && 
+             helm repo update && 
+             helm install --name ingress-master ingress-nginx/ingress-nginx --namespace master \
+             --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux \
+             --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=20.54.101.163)
+            """])
            } else {
              sh([script: """
              kubectl get deployment --namespace develop | grep  ingress-develop || (helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && 
@@ -114,17 +116,10 @@ pipeline {
              --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux \
              --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=51.104.179.70)
             """])
-              
-            //  sh """ grep ingress-develop <("kubectl get deployments") ||  
-            //   helm install --name ingress-develop ingress-nginx/ingress-nginx --namespace develop
-            //   --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux 
-            //   --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=51.104.179.70
-            //   """
            }
           }
         }
       }
-
     }
     // stage('clone kd-helm reposetory and inject imagePullSecrets block'){
       // when {
