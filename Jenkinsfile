@@ -56,11 +56,11 @@ pipeline {
       }
     }
     stage('create nameSpace') {
-      when {
-        anyOf {
-          branch 'master'; branch 'develop'
-        }
-      }
+      // when {
+      //   anyOf {
+      //     branch 'master'; branch 'develop'
+      //   }
+      // }
       steps {
         container('kube-helm-slave'){
 
@@ -70,11 +70,11 @@ pipeline {
       }
     }
     stage('create config map and secret') {
-      when {
-        anyOf {
-          branch 'master'; branch 'develop'
-        }
-      }
+      // when {
+      //   anyOf {
+      //     branch 'master'; branch 'develop'
+      //   }
+      // }
       steps {
         container('kube-helm-slave'){
             script {
