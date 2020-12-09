@@ -32,42 +32,42 @@ pipeline {
     }
   }
     stages {
-      //  this stage create enviroment variable from git for discored massage
-    //   stage('get_commit_msg') {
-    //     steps {
-    //       container('jnlp'){
-    //       script {
-    //         env.GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
-    //         env.GIT_SHORT_COMMIT = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-    //         env.GIT_COMMITTER_EMAIL = sh (script: "git --no-pager show -s --format='%ae'", returnStdout: true  ).trim()
-    //         env.GIT_REPO_NAME = scm.getUserRemoteConfigs()[0].getUrl().tokenize('/')[3].split("\\.")[0]
+      // this stage create enviroment variable from git for discored massage
+      stage('get_commit_msg') {
+        steps {
+          container('jnlp'){
+          script {
+            env.GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
+            env.GIT_SHORT_COMMIT = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+            env.GIT_COMMITTER_EMAIL = sh (script: "git --no-pager show -s --format='%ae'", returnStdout: true  ).trim()
+            env.GIT_REPO_NAME = scm.getUserRemoteConfigs()[0].getUrl().tokenize('/')[3].split("\\.")[0]
             
-    //         // Takes the branch name and replaces the slashes with the %2F mark 
-    //         env.BRANCH_FOR_URL = sh([script: "echo ${GIT_BRANCH} | sed 's;/;%2F;g'", returnStdout: true]).trim()
-    //         // Takes the job path variable and replaces the slashes with the %2F mark 
-    //         env.JOB_PATH = sh([script: "echo ${JOB_NAME} | sed 's;/;%2F;g'", returnStdout: true]).trim()
-    //         // creating variable that contain the job path without the branch name  
-    //         env.JOB_WITHOUT_BRANCH = sh([script: "echo ${env.JOB_PATH} | sed 's;${BRANCH_FOR_URL};'';g'", returnStdout: true]).trim() 
-    //         //  creating variable that contain the JOB_WITHOUT_BRANCH variable without the last 3 characters 
-    //         env.JOB_FOR_URL = sh([script: "echo ${JOB_WITHOUT_BRANCH}|rev | cut -c 4- | rev", returnStdout: true]).trim()  
-    //         env.BRANCH_TAG_NAME = "${env.BRANCH_NAME}" 
-    //       }
-    //     }
-    //   }
-    // }
+            // Takes the branch name and replaces the slashes with the %2F mark 
+            env.BRANCH_FOR_URL = sh([script: "echo ${GIT_BRANCH} | sed 's;/;%2F;g'", returnStdout: true]).trim()
+            // Takes the job path variable and replaces the slashes with the %2F mark 
+            env.JOB_PATH = sh([script: "echo ${JOB_NAME} | sed 's;/;%2F;g'", returnStdout: true]).trim()
+            // creating variable that contain the job path without the branch name  
+            env.JOB_WITHOUT_BRANCH = sh([script: "echo ${env.JOB_PATH} | sed 's;${BRANCH_FOR_URL};'';g'", returnStdout: true]).trim() 
+            //  creating variable that contain the JOB_WITHOUT_BRANCH variable without the last 3 characters 
+            env.JOB_FOR_URL = sh([script: "echo ${JOB_WITHOUT_BRANCH}|rev | cut -c 4- | rev", returnStdout: true]).trim()  
+            env.BRANCH_TAG_NAME = "${env.BRANCH_NAME}" 
+          }
+        }
+      }
+    }
 
 
 
-    //   stage('create nameSpace and configMap in the cluster') {
-    //     // when {
-    //     //   anyOf {
-    //     //     branch 'master'; branch 'develop'
-    //     //   }
-    //     // }
-    //     steps {
-    //       container('kube-helm-slave'){
-    //         // sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
-    //         // sh ("kubectl get secrets acr-secret || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password=Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io")
+      // stage('create nameSpace and configMap in the cluster') {
+        // when {
+        //   anyOf {
+        //     branch 'master'; branch 'develop'
+        //   }
+        // }
+        // steps {
+        //   container('kube-helm-slave'){
+            // sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
+            //  sh ("kubectl get secrets acr-secret --namespace develop || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password=Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io")
 
     //       //   sh("kubectl get ns develop || kubectl create ns develop")
     //       //   // sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
