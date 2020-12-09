@@ -31,7 +31,7 @@ pipeline {
  """
     }
   }
-    stages {
+  stages {
       // this stage create enviroment variable from git for discored massage
       stage('get_commit_msg') {
         steps {
@@ -69,7 +69,7 @@ pipeline {
         }
       }
     }
-    stage('create nameSpace') {
+    stage('create config map and secret') {
       when {
         anyOf {
           branch 'master'; branch 'develop'
