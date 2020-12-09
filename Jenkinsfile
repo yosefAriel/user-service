@@ -91,59 +91,89 @@ pipeline {
     // }
 
 
-    stage('create and configure ingress under current namespace'){
-       // when {
-       //   anyOf {
-      //     branch 'master'; branch 'develop'
-      //   }
-      // }
-      steps{
-        container('kube-helm-slave'){
-          script {
-           if(env.BRANCH_NAME == 'master'){ 
-             sh([script: """
-             kubectl get deployment --namespace master | grep  ingress-master || (helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && 
-             helm repo update && 
-             helm install --name ingress-master ingress-nginx/ingress-nginx --namespace master \
-             --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux \
-             --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=20.54.101.163)
-            """])
-           } else {
-             sh([script: """
-             kubectl get deployment --namespace develop | grep  ingress-develop || (helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && 
-             helm repo update && 
-             helm install --name ingress-develop ingress-nginx/ingress-nginx --namespace develop \
-             --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux \
-             --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=51.104.179.70)
-            """])
-           }
-          }
-        }
-      }
-    }
-    // stage('clone kd-helm reposetory and inject imagePullSecrets block'){
+    // stage('create and configure ingress under current namespace'){
+    //    // when {
+    //    //   anyOf {
+    //   //     branch 'master'; branch 'develop'
+    //   //   }
+    //   // }
+    //   steps{
+    //     container('kube-helm-slave'){
+    //       script {
+    //        if(env.BRANCH_NAME == 'master'){ 
+    //          sh([script: """
+    //          kubectl get deployment --namespace master | grep  ingress-master || (helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && 
+    //          helm repo update && 
+    //          helm install --name ingress-master ingress-nginx/ingress-nginx --namespace master \
+    //          --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux \
+    //          --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=20.54.101.163)
+    //         """])
+    //        } else {
+    //          sh([script: """
+    //          kubectl get deployment --namespace develop | grep  ingress-develop || (helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && 
+    //          helm repo update && 
+    //          helm install --name ingress-develop ingress-nginx/ingress-nginx --namespace develop \
+    //          --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux \
+    //          --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=51.104.179.70)
+    //         """])
+    //        }
+    //       }
+    //     }
+    //   }
+    // }
+    stage('clone kd-helm reposetory and inject imagePullSecrets block'){
       // when {
       //   anyOf {
       //     branch 'master'; branch 'develop'
       //   }
       // }
-    //   steps {
-    //      container('jnlp'){
-    //       git branch: 'master',
-    //         credentialsId: 'gitHubToken',
-    //         url: 'https://github.com/meateam/kd-helm.git'
-    //         sh 'cat common/templates/_deployment.yaml'
-    //     script {
-    //         env.space1 = "- name: acr-secret"
-    //         env.space2 = "imagePullSecrets:"
-    //     }
-    //       sh "sed -i '29 i 2345678      ${env.space2}' ./common/templates/_deployment.yaml && sed -i 's;2345678;'';g' ./common/templates/_deployment.yaml"
-    //       sh "sed -i '30 i 2345678        ${env.space1}' ./common/templates/_deployment.yaml && sed -i 's;2345678;'';g' ./common/templates/_deployment.yaml" 
-    //       sh "sed -i 's;{{ .Values.image.tag }};${env.BRANCH_TAG_NAME};g' ./common/templates/_deployment.yaml"
-    //       sh 'cat common/templates/_deployment.yaml'
-    //     }
-    //   }
-    // }
+      steps {
+         container('jnlp'){
+          git branch: 'master',
+            credentialsId: 'gitHubToken',
+            url: 'https://github.com/meateam/kd-helm.git'
+            sh 'cat common/templates/_deployment.yaml'
+        script {
+            env.space1 = "- name: acr-secret"
+            env.space2 = "imagePullSecrets:"
+        }
+          sh "sed -i '29 i 2345678      ${env.space2}' ./common/templates/_deployment.yaml && sed -i 's;2345678;'';g' ./common/templates/_deployment.yaml"
+          sh "sed -i '30 i 2345678        ${env.space1}' ./common/templates/_deployment.yaml && sed -i 's;2345678;'';g' ./common/templates/_deployment.yaml" 
+          sh "sed -i 's;{{ .Values.image.tag }};${env.BRANCH_TAG_NAME};g' ./common/templates/_deployment.yaml"
+          sh 'cat common/templates/_deployment.yaml'
+        }
+      }
+      post {
+        always {
+            stash includes: '../kd-helm/**/*', name: 'kdHelmRepo'
+        } 
+      }
+    }
+      stage('deploy app')} {
+        // when {
+        //   anyOf {
+        //     branch 'master'; branch 'develop'
+        //   }
+        // }
+        steps {
+          container('kube-helm-slave'){
+            unstash 'kdHelmRepo'
+            sh 'pwd'
+          if(env.BRANCH_NAME == 'master'){ 
+             sh([script: """
+             (helm get drive-master && ./helm-dep-up-umbrella.sh ./helm-chart/ && helm upgrade drive-master ./helm-chart/ ) 
+             ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-master --namespace master --set global.ingress.hosts[0]=drive-master.northeurope.cloudapp.azure.com)
+            """])
+          }
+          else {
+             sh([script: """
+             (helm get drive-develop && ./helm-dep-up-umbrella.sh ./helm-chart/ && helm upgrade drive-develop ./helm-chart/ ) 
+             ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-develop --namespace develop --set global.ingress.hosts[0]=drive-develop.northeurope.cloudapp.azure.com)
+            """])
+          }
+        }
+
+      }
 
 
 
