@@ -113,7 +113,7 @@ pipeline {
              helm install --name ingress-develop ingress-nginx/ingress-nginx --namespace develop \
              --set controller.replicaCount=2 --set controller.nodeSelector."beta\\.kubernetes\\.io/os"=linux \
              --set defaultBackend.nodeSelector."beta\\.kubernetes\\.io/os"=linux --set controller.service.loadBalancerIP=51.104.179.70)
-            ]"""])
+            """])
               
             //  sh """ grep ingress-develop <("kubectl get deployments") ||  
             //   helm install --name ingress-develop ingress-nginx/ingress-nginx --namespace develop
