@@ -159,17 +159,19 @@ pipeline {
           container('kube-helm-slave'){
             unstash 'kdHelmRepo'
             sh 'pwd'
-          if(env.BRANCH_NAME == 'master'){ 
-             sh([script: """
-             (helm get drive-master && ./helm-dep-up-umbrella.sh ./helm-chart/ && helm upgrade drive-master ./helm-chart/ ) 
-             ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-master --namespace master --set global.ingress.hosts[0]=drive-master.northeurope.cloudapp.azure.com)
-            """])
-          }
-          else {
-             sh([script: """
-             (helm get drive-develop && ./helm-dep-up-umbrella.sh ./helm-chart/ && helm upgrade drive-develop ./helm-chart/ ) 
-             ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-develop --namespace develop --set global.ingress.hosts[0]=drive-develop.northeurope.cloudapp.azure.com)
-            """])
+          script {
+            if(env.BRANCH_NAME == 'master'){ 
+              sh([script: """
+              (helm get drive-master && ./helm-dep-up-umbrella.sh ./helm-chart/ && helm upgrade drive-master ./helm-chart/ ) 
+              ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-master --namespace master --set global.ingress.hosts[0]=drive-master.northeurope.cloudapp.azure.com)
+              """])
+            }
+            else {
+              sh([script: """
+              (helm get drive-develop && ./helm-dep-up-umbrella.sh ./helm-chart/ && helm upgrade drive-develop ./helm-chart/ ) 
+              ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-develop --namespace develop --set global.ingress.hosts[0]=drive-develop.northeurope.cloudapp.azure.com)
+              """])
+            }
           }
         }
       }
