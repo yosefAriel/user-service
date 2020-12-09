@@ -149,7 +149,7 @@ pipeline {
         } 
       }
     }
-      stage('deploy app')} {
+      stage('deploy app'){
         // when {
         //   anyOf {
         //     branch 'master'; branch 'develop'
