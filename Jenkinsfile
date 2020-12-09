@@ -69,7 +69,7 @@ pipeline {
         }
       }
     }
-    stage('create config map and secret') {
+    stage('create configmap and secret') {
       // when {
       //   anyOf {
       //     branch 'master'; branch 'develop'
@@ -78,7 +78,7 @@ pipeline {
       steps {
         container('kube-helm-slave'){
             script {
-             sh ("kubectl get secrets acr-secret --namespace develop || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password=Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io")
+             sh ("kubectl get secrets acr-secret --namespace develop || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password=Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace develop")
             //sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
               if (env.BRANCH_NAME == 'master') {
               configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'MASTER_CONFIG_FILE')]){
