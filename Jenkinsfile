@@ -108,7 +108,7 @@ pipeline {
           //   """
            } else {
              sh([script: """
-             kubectl get deployments --namespace develop | grep ingress-develop ||helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
+             kubectl get deployment --namespace develop | grep  ingress-develop ||helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
              helm repo update && \
              helm install --name ingress-develop ingress-nginx/ingress-nginx --namespace develop \
              --set controller.replicaCount=2 --set controller.nodeSelector.beta\\.kubernetes\\.io/os=linux \
