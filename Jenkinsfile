@@ -173,10 +173,9 @@ pipeline {
           //    ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-develop --namespace develop --set global.ingress.hosts[0]=drive-develop.northeurope.cloudapp.azure.com)
           //   """])
           // }
-          // sh "curl -I 'drive-${env.BRANCH_NAME}.northeurope.cloudapp.azure.com/' 2>&1 | awk /HTTP\// {print $2}"
         
-          sh "http drive-develop.northeurope.cloudapp.azure.com/"
-          // sh "http drive-${env.BRANCH_NAME}.northeurope.cloudapp.azure.com/"
+          sh "apt install curl && curl -I drive-develop.northeurope.cloudapp.azure.com/"
+          // sh "apt install curl && curl -I drive-${env.BRANCH_NAME}.northeurope.cloudapp.azure.com/"
   
         }
       }
