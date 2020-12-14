@@ -174,10 +174,10 @@ pipeline {
           //   """])
           // }
           // sh "curl -I 'drive-${env.BRANCH_NAME}.northeurope.cloudapp.azure.com/' 2>&1 | awk /HTTP\// {print $2}"
-          sh "echo -I 'drive-${env.BRANCH_NAME}.northeurope.cloudapp.azure.com/'"
-          sh "echo -I 'drive-env.BRANCH_NAME.northeurope.cloudapp.azure.com/'"
-          sh "curl -I drive-develop.northeurope.cloudapp.azure.com/"
-          // sh([script: "curl -I drive-develop.northeurope.cloudapp.azure.com/ 2>&1 | awk /HTTP// {print checking if drive up is running using curl command \$2}"])
+        
+          sh "http drive-develop.northeurope.cloudapp.azure.com/"
+          // sh "http drive-${env.BRANCH_NAME}.northeurope.cloudapp.azure.com/"
+  
         }
       }
     }
