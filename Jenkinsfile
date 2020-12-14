@@ -23,6 +23,9 @@ pipeline {
                   mountPath: /var/lib/docker
             - name: kube-helm-slave
               image:  qayesodot/slave-jenkins:kube-helm
+              securityContext:
+                allowPrivilegeEscalation: false
+                runAsUser: 0
               command: ["/bin/sh"]
               args: ["-c","while true; do echo hello; sleep 10;done"]            
           volumes: 
