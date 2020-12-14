@@ -174,7 +174,7 @@ pipeline {
           //   """])
           // }
         
-          sh "apt install curl && curl -I drive-develop.northeurope.cloudapp.azure.com/"
+          sh "apk --no-cache add curl && curl -I drive-develop.northeurope.cloudapp.azure.com/"
           // sh "apt install curl && curl -I drive-${env.BRANCH_NAME}.northeurope.cloudapp.azure.com/"
   
         }
