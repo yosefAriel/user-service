@@ -58,7 +58,7 @@ pipeline {
 
 
 
-    //   stage('create nameSpace and configMap in the cluster') {
+    //   stage('create nameSpace,secrets and configMap in the cluster') {
     //     // when {
     //     //   anyOf {
     //     //     branch 'master'; branch 'develop'
@@ -66,9 +66,6 @@ pipeline {
     //     // }
     //     steps {
     //       container('kube-helm-slave'){
-    //         // sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
-    //         // sh ("kubectl get secrets acr-secret || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password=Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io")
-
     //       //   sh("kubectl get ns develop || kubectl create ns develop")
     //       //   // sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
     //       //   sleep(10)
@@ -76,13 +73,17 @@ pipeline {
     //       //   if(env.BRANCH_NAME == 'devops/ci') {
     //       //     configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'MASTER_CONFIG_FILE')]){
     //       //     sh ("kubectl get cm kd.config --namespace master|| kubectl apply -f ${env.MASTER_CONFIG_FILE}"
-    //       //     // sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.MASTER_CONFIG_FILE}")  
+    //       //     sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.MASTER_CONFIG_FILE}")  
+
+    //              sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
     //       //     }    
     //       //   }
     //       //   else{
     //       //     configFileProvider([configFile(fileId:'abda1ce7-3925-4759-88a7-5163bdb44382',variable:'DEVELOP_CONFIG_FILE')]){
     //       //       sh ("kubectl get cm kd.config --namespace develop || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")
-    //       //       //sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")  
+    //                sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")  
+
+    //                sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
     //       //     }
     //       //   }
     //       // }
@@ -121,34 +122,36 @@ pipeline {
     //     }
     //   }
     // }
-    stage('clone kd-helm reposetory and inject imagePullSecrets block'){
-      // when {
-      //   anyOf {
-      //     branch 'master'; branch 'develop'
-      //   }
-      // }
-      steps {
-         container('jnlp'){
-          git branch: 'master',
-            credentialsId: 'gitHubToken',
-            url: 'https://github.com/meateam/kd-helm.git'
-            sh 'cat common/templates/_deployment.yaml'
-        script {
-            env.space1 = "- name: acr-secret"
-            env.space2 = "imagePullSecrets:"
-        }
-          sh "sed -i '29 i 2345678      ${env.space2}' ./common/templates/_deployment.yaml && sed -i 's;2345678;'';g' ./common/templates/_deployment.yaml"
-          sh "sed -i '30 i 2345678        ${env.space1}' ./common/templates/_deployment.yaml && sed -i 's;2345678;'';g' ./common/templates/_deployment.yaml" 
-          sh "sed -i 's;{{ .Values.image.tag }};${env.BRANCH_TAG_NAME};g' ./common/templates/_deployment.yaml"
-          sh 'cat common/templates/_deployment.yaml'
-        }
-      }
-      post {
-        always {
-            stash includes: '../kd-helm/**/*', name: 'kdHelmRepo'
-        } 
-      }
-    }
+    // stage('clone kd-helm reposetory and inject imagePullSecrets block'){
+    //   // when {
+    //   //   anyOf {
+    //   //     branch 'master'; branch 'develop'
+    //   //   }
+    //   // }
+    //   steps {
+    //      container('jnlp'){
+    //       git branch: 'master',
+    //         credentialsId: 'gitHubToken',
+    //         url: 'https://github.com/meateam/kd-helm.git'
+    //         sh 'cat common/templates/_deployment.yaml'
+    //     script {
+    //         env.space1 = "- name: acr-secret"
+    //         env.space2 = "imagePullSecrets:"
+    //     }
+    //       sh "sed -i '29 i 2345678      ${env.space2}' ./common/templates/_deployment.yaml && sed -i 's;2345678;'';g' ./common/templates/_deployment.yaml"
+    //       sh "sed -i '30 i 2345678        ${env.space1}' ./common/templates/_deployment.yaml && sed -i 's;2345678;'';g' ./common/templates/_deployment.yaml" 
+    //       sh "sed -i 's;{{ .Values.image.tag }};${env.BRANCH_TAG_NAME};g' ./common/templates/_deployment.yaml"
+    //       sh 'cat common/templates/_deployment.yaml'
+    //     }
+    //   }
+    //   post {
+    //     always {
+    //         stash includes: '../kd-helm/**/*', name: 'kdHelmRepo'
+    //     } 
+    //   }
+    // }
+
+    // this stage deploy or upgrade the drive-app to k8s , depends if drive-app is already deployed on the cluster 
       stage('deploy app'){
         // when {
         //   anyOf {
@@ -157,20 +160,23 @@ pipeline {
         // }
         steps {
           container('kube-helm-slave'){
-            unstash 'kdHelmRepo'
-            sh 'pwd'
-          if(env.BRANCH_NAME == 'master'){ 
-             sh([script: """
-             (helm get drive-master && ./helm-dep-up-umbrella.sh ./helm-chart/ && helm upgrade drive-master ./helm-chart/ ) 
-             ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-master --namespace master --set global.ingress.hosts[0]=drive-master.northeurope.cloudapp.azure.com)
-            """])
-          }
-          else {
-             sh([script: """
-             (helm get drive-develop && ./helm-dep-up-umbrella.sh ./helm-chart/ && helm upgrade drive-develop ./helm-chart/ ) 
-             ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-develop --namespace develop --set global.ingress.hosts[0]=drive-develop.northeurope.cloudapp.azure.com)
-            """])
-          }
+            // unstash 'kdHelmRepo'
+          // if(env.BRANCH_NAME == 'master'){ 
+          //    sh([script: """
+          //    (helm get drive-master && ./helm-dep-up-umbrella.sh ./helm-chart/ && helm upgrade drive-master ./helm-chart/ ) 
+          //    ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-master --namespace master --set global.ingress.hosts[0]=drive-master.northeurope.cloudapp.azure.com)
+          //   """])
+          // }
+          // else {
+          //    sh([script: """
+          //    (helm get drive-develop && ./helm-dep-up-umbrella.sh ./helm-chart/ && helm upgrade drive-develop ./helm-chart/ ) 
+          //    ||(./helm-dep-up-umbrella.sh ./helm-chart/ && helm install ./helm-chart/ --name drive-develop --namespace develop --set global.ingress.hosts[0]=drive-develop.northeurope.cloudapp.azure.com)
+          //   """])
+          // }
+          // sh "curl -I 'drive-${env.BRANCH_NAME}.northeurope.cloudapp.azure.com/' 2>&1 | awk /HTTP\// {print $2}"
+          sh "echo -I 'drive-${env.BRANCH_NAME}.northeurope.cloudapp.azure.com/'"
+          sh "echo -I 'drive-env.BRANCH_NAME.northeurope.cloudapp.azure.com/'"
+          sh "curl -I 'drive-develop.northeurope.cloudapp.azure.com/' 2>&1 | awk /HTTP\// {print checking if drive up is running using curl command $2}"
         }
       }
     }
