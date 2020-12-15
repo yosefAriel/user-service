@@ -82,14 +82,14 @@ pipeline {
           //     }    
           //   }
           //   else{
-          //     configFileProvider([configFile(fileId:'abda1ce7-3925-4759-88a7-5163bdb44382',variable:'DEVELOP_CONFIG_FILE')]){
+               configFileProvider([configFile(fileId:'abda1ce7-3925-4759-88a7-5163bdb44382',variable:'DEVELOP_CONFIG_FILE')]){
           //       sh ("kubectl get cm kd.config --namespace develop || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")
                    sh ("kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")  
 
                   //  sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
           //     }
           //   }
-          // }
+          }
         }
       }
     }
