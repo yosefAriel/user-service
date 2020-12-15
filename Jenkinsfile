@@ -61,38 +61,38 @@ pipeline {
 
 
 
-    //   stage('create nameSpace,secrets and configMap in the cluster') {
-    //     // when {
-    //     //   anyOf {
-    //     //     branch 'master'; branch 'develop'
-    //     //   }
-    //     // }
-    //     steps {
-    //       container('kube-helm-slave'){
-    //       //   sh("kubectl get ns develop || kubectl create ns develop")
-    //       //   // sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
-    //       //   sleep(10)
-    //       // script {
-    //       //   if(env.BRANCH_NAME == 'devops/ci') {
-    //       //     configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'MASTER_CONFIG_FILE')]){
-    //       //     sh ("kubectl get cm kd.config --namespace master|| kubectl apply -f ${env.MASTER_CONFIG_FILE}"
-    //       //     sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.MASTER_CONFIG_FILE}")  
+      stage('create nameSpace,secrets and configMap in the cluster') {
+        // when {
+        //   anyOf {
+        //     branch 'master'; branch 'develop'
+        //   }
+        // }
+        steps {
+          container('kube-helm-slave'){
+          //   sh("kubectl get ns develop || kubectl create ns develop")
+          //   // sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
+          //   sleep(10)
+          // script {
+          //   if(env.BRANCH_NAME == 'devops/ci') {
+          //     configFileProvider([configFile(fileId:'34e71bc6-8b5d-4e31-8d6e-92d991802dcb',variable:'MASTER_CONFIG_FILE')]){
+          //     sh ("kubectl get cm kd.config --namespace master|| kubectl apply -f ${env.MASTER_CONFIG_FILE}"
+          //     sh ("kubectl apply -f ${env.MASTER_CONFIG_FILE}")  
 
-    //              sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
-    //       //     }    
-    //       //   }
-    //       //   else{
-    //       //     configFileProvider([configFile(fileId:'abda1ce7-3925-4759-88a7-5163bdb44382',variable:'DEVELOP_CONFIG_FILE')]){
-    //       //       sh ("kubectl get cm kd.config --namespace develop || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")
-    //                sh ("kubectl get cm kd.config --namespace ${env.BRANCH_NAME} || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")  
+                //  sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
+          //     }    
+          //   }
+          //   else{
+          //     configFileProvider([configFile(fileId:'abda1ce7-3925-4759-88a7-5163bdb44382',variable:'DEVELOP_CONFIG_FILE')]){
+          //       sh ("kubectl get cm kd.config --namespace develop || kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")
+                   sh ("kubectl apply -f ${env.DEVELOP_CONFIG_FILE}")  
 
-    //                sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
-    //       //     }
-    //       //   }
-    //       // }
-    //     }
-    //   }
-    // }
+                  //  sh ("kubectl get secrets acr-secret --namespace ${env.BRANCH_NAME} || kubectl create secret docker-registry acr-secret --docker-username=DriveHub --docker-password= Eq0186MYP7hm/bkntY=YW8NpbMhy3PpC  --docker-server=https://drivehub.azurecr.io --namespace ${env.BRANCH_NAME}")
+          //     }
+          //   }
+          // }
+        }
+      }
+    }
 
 
     // stage('create and configure ingress under current namespace'){
