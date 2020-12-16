@@ -62,10 +62,10 @@ pipeline {
 
          stage('test save artifact'){
            steps {
-              sh "echo ${JENKINS_HOME}/jobs/${env.JOB_NAME}/branches/devops-ci*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
+              sh "echo ${JENKINS_HOME}/jobs/${env.JOB_BASE_NAME}/branches/devops-ci*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
               sh 'echo "artifact file" > generatedFile.txt'
               archiveArtifacts artifacts: 'generatedFile.txt', onlyIfSuccessful: true
-              sh "cat ${JENKINS_HOME}/jobs/${env.JOB_NAME}/branches/devops-ci*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
+              sh "cat ${JENKINS_HOME}/jobs/${env.JOB_BASE_NAME}/branches/devops-ci*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
               
            }
          }
