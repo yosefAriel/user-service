@@ -56,7 +56,7 @@ pipeline {
             env.BRANCH_TAG_NAME = "${env.BRANCH_NAME}" 
 
             env.JOB_BASE_NAME_ARTIFACT = sh([script: """
-            echo ${env.JOB_NAME%/*}
+            echo ${env.JOB_NAME%/*} \
             """,returnStdout: true]).trim()
             sh "echo ${env.JOB_BASE_NAME_ARTIFACT}" 
           }
