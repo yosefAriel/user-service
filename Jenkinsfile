@@ -55,7 +55,7 @@ pipeline {
             env.JOB_FOR_URL = sh([script: "echo ${JOB_WITHOUT_BRANCH}|rev | cut -c 4- | rev", returnStdout: true]).trim()  
             env.BRANCH_TAG_NAME = "${env.BRANCH_NAME}" 
 
-            env.JOB_BASE_NAME_ARTIFACT = sh([script: "echo ${env.JOB_NAME%/*}", returnStdout: true]).trim()
+            env.JOB_BASE_NAME_ARTIFACT = sh([script: """echo ${env.JOB_NAME%\/*}""", returnStdout: true]).trim()
           }
         }
       }
