@@ -34,8 +34,8 @@ pipeline {
  """
     }
   }
-     stages {
-    //   //  this stage create enviroment variable from git for discored massage
+    stages {
+      //  this stage create enviroment variable from git for discored massage
       stage('get_commit_msg') {
         steps {
           container('jnlp'){
@@ -54,14 +54,15 @@ pipeline {
             //  creating variable that contain the JOB_WITHOUT_BRANCH variable without the last 3 characters 
             env.JOB_FOR_URL = sh([script: "echo ${JOB_WITHOUT_BRANCH}|rev | cut -c 4- | rev", returnStdout: true]).trim()  
             env.BRANCH_TAG_NAME = "${env.BRANCH_NAME}" 
-            env.JOB_BASE_NAME_ARTIFACT = env.JOB_NAME.tokenize("/")[0]​ 
+
+            env.JOB_BASE_NAME_ARTIFACT = "${env.JOB_NAME}".tokenize('/')[0]​
           }
         }
       }
     }
 
 
-         stage('test save artifact'){
+        stage('test save artifact'){
            steps {
               sh "echo ${JENKINS_HOME}/jobs/${env.JOB_BASE_NAME_ARTIFACT}/branches/devops-ci*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
               // sh 'echo "artifact file" > generatedFile.txt'
