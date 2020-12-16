@@ -73,7 +73,7 @@ pipeline {
         //       // sh 'echo "artifact file" > generatedFile.txt'
         //       // archiveArtifacts artifacts: 'generatedFile.txt', onlyIfSuccessful: true
         //       // sh "cat ${JENKINS_HOME}/jobs/${env.JOB_BASE_NAME_ARTIFACT}/branches/devops-ci*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
-              
+        // 
         //    }
         //  }
 
