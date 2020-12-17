@@ -63,9 +63,17 @@ pipeline {
         stage('test save artifact'){
            steps {
               sh 'echo "artifact file" > generatedFile.txt'
-              archiveArtifacts artifacts: 'generatedFile.txt', onlyIfSuccessful: true
+              archiveArtifacts artifacts: 'generatedFile.html', onlyIfSuccessful: true
               // sh "cat ${JENKINS_HOME}/jobs/${env.JOB_FOR_URL}/branches/${env.BRANCH_NAME}*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
-              sh "cat ${JENKINS_HOME}/jobs/${env.JOB_FOR_URL}/branches/devops-ci*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
+              // sh "cat ${JENKINS_HOME}/jobs/${env.JOB_FOR_URL}/branches/devops-ci*/builds/${BUILD_NUMBER}/archive/generatedFile.html"
+              publishHTML target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: "/var/lib/jenkins/jobs/api-getway-test/branches/devops-ci.asmhhg/builds/${BUILD_NUMBER}/archive/",
+                reportFiles: 'generatedFile.html',
+                reportName: 'test Report'
+          ]
            }
          }
 
