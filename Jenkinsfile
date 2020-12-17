@@ -76,6 +76,7 @@ pipeline {
                 reportFiles: 'generatedFile.html',
                 reportName: 'test Report'
           ]
+            sh 'rm generatedFile.html'
            }
          }
 
