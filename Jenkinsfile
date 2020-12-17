@@ -55,10 +55,8 @@ pipeline {
             env.JOB_FOR_URL = sh([script: "echo ${JOB_WITHOUT_BRANCH}|rev | cut -c 4- | rev", returnStdout: true]).trim()  
             env.BRANCH_TAG_NAME = "${env.BRANCH_NAME}" 
 
-            env.JOB_BASE_NAME_ARTIFACT = sh([script: """
-            echo ${env.JOB_NAME%/*} \
-            """,returnStdout: true]).trim()
-            sh "echo ${env.JOB_BASE_NAME_ARTIFACT}" 
+            // env.JOB_BASE_NAME_ARTIFACT = sh([script: "echo ${env.JOB_NAME%/*}",returnStdout: true]).trim()
+            // sh "echo ${env.JOB_BASE_NAME_ARTIFACT}" 
           }
         }
       }
@@ -67,7 +65,7 @@ pipeline {
 
         stage('test save artifact'){
            steps {
-              sh "echo ${JENKINS_HOME}/jobs/${env.JOB_BASE_NAME_ARTIFACT}/branches/${env.BRANCH_NAME}*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
+              sh "echo ${JENKINS_HOME}/jobs/${env.JOB_FOR_URL}/branches/${env.BRANCH_NAME}*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
               // sh 'echo "artifact file" > generatedFile.txt'
               // archiveArtifacts artifacts: 'generatedFile.txt', onlyIfSuccessful: true
               // sh "cat ${JENKINS_HOME}/jobs/${env.JOB_BASE_NAME_ARTIFACT}/branches/devops-ci*/builds/${BUILD_NUMBER}/archive/generatedFile.txt"
